@@ -1,0 +1,51 @@
+{
+    "name": "henzeb/enumhancer-ide-helper",
+    "description": "IDE helper file generator for Enumhancer",
+    "keywords": [
+        "enumhancer",
+        "ide",
+        "ide-helper",
+        "helper"
+    ],
+    "homepage": "https://github.com/henzeb/enumhancer-ide-helper",
+    "license": "AGPL-3.0-only",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Henze Berkheij",
+            "email": "henzeberkheij@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "nette/php-generator": "^4.0"
+    },
+    "require-dev": {
+        "composer/composer": "^2.5",
+        "mockery/mockery": "^1.5",
+        "henzeb/enumhancer": "^v1.23",
+        "orchestra/testbench": "v6.24.1|^v7.18",
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^9.5.27"
+    },
+    "autoload": {
+        "psr-4": {
+            "Henzeb\\Enumhancer\\Idehelper\\": "src/Idehelper"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Henzeb\\Enumhancer\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage-txt": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text",
+        "test-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage",
+        "test-dox": "vendor/bin/phpunit --testdox"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

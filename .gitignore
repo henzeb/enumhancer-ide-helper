@@ -1,0 +1,12 @@
+.idea
+.php_cs
+.php_cs.cache
+.phpunit.result.cache
+./_enumhancer.php
+build
+coverage
+composer.lock
+testbench.yaml
+vendor
+node_modules
+.php-cs-fixer.cache
