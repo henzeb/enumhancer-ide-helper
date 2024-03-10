@@ -2,13 +2,14 @@
 
 namespace Henzeb\Enumhancer\Tests\Unit\Idehelper;
 
-use ReflectionClass;
-use PHPUnit\Framework\TestCase;
+use Henzeb\Enumhancer\Idehelper\IdeHelperPrinter;
+use Henzeb\Enumhancer\Tests\Fixtures\SimpleEnum;
 use Nette\PhpGenerator\Closure;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
-use Henzeb\Enumhancer\Tests\Fixtures\SimpleEnum;
-use Henzeb\Enumhancer\Idehelper\IdeHelperPrinter;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
 class IdeHelperPrinterTest extends TestCase
 {
@@ -25,22 +26,22 @@ class IdeHelperPrinterTest extends TestCase
         );
     }
 
-    public function testShouldReturnBracketedInterfaceWhenPrintingMultipleInFile()
+    public function testShouldReturnBracketedInterfaceWhenPrintingMultipleInFile(): void
     {
         $printer = new IdeHelperPrinter();
         $file = new PhpFile();
-        $file->addNamespace('IdeHelper\Test\Name\Space');
-        $file->addNamespace('IdeHelper\Test\Name\Space2');
+        $file->addNamespace('IdeHelper\Test\Name\Space')->addFunction('test');
+        $file->addNamespace('IdeHelper\Test\Name\Space2')->addFunction('test2');
 
         $this->assertEquals(
-            "<?php\n\nnamespace IdeHelper\Test\Name\Space\n{\n}\n\n\nnamespace IdeHelper\Test\Name\Space2\n{\n}\n",
+            "<?php\n\nnamespace IdeHelper\Test\Name\Space\n{\n    function test()\n    {\n    }\n}\n\n\nnamespace IdeHelper\Test\Name\Space2\n{\n    function test2()\n    {\n    }\n}\n",
             $printer->printFile(
                 $file
             )
         );
     }
 
-    public function providesMethodTagCases(): array
+    public static function providesMethodTagCases(): array
     {
         return [
             ['expected' => 'void myFunction()', 'name' => 'myFunction', 'returnType' => 'void', 'static' => false],
@@ -154,7 +155,7 @@ class IdeHelperPrinterTest extends TestCase
                 'namespace' => SimpleEnum::class
             ],
             [
-                'expected' => 'static SimpleEnum|null myFunction(SimpleEnum $unitTest = null)',
+                'expected' => 'static SimpleEnum|null myFunction(SimpleEnum|null $unitTest = null)',
                 'name' => 'myFunction',
                 'returnType' => Closure::from(function (SimpleEnum $unitTest = null): ?SimpleEnum {
                 }),
@@ -186,17 +187,19 @@ class IdeHelperPrinterTest extends TestCase
      * @param string $name
      * @param Closure|string $returnType
      * @param bool $static
+     * @param string|null $namespace
      * @return void
+     * @throws ReflectionException
      * @dataProvider providesMethodTagCases
-     * @throws \ReflectionException
      */
     public function testShouldPrintMethodTag(
-        string $expected,
-        string $name,
+        string         $expected,
+        string         $name,
         Closure|string $returnType,
-        bool $static,
-        string $namespace = null
-    ) {
+        bool           $static,
+        string         $namespace = null
+    )
+    {
         $printer = new IdeHelperPrinter();
 
         if ($namespace) {
